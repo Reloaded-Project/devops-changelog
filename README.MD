@@ -64,6 +64,8 @@ To use this action in your own repository:
 
 The following flags are directly passed to the underlying [auto-changelog tool][auto-changelog]:
 
+(PS. If you find it useful, consider donating to the original author)
+
 | Input                   | Required | Default        | Description                                                                  |
 | ----------------------- | -------- | -------------- | ---------------------------------------------------------------------------- |
 | `output`                | No       | `CHANGELOG.md` | Output file path                                                             |
@@ -110,6 +112,60 @@ And the following parameters are specific to this workflow.
 | `release-tag`               | No       | `""`    | Tag associated with the GitHub Release                                         |
 | `override-starting-version` | No       | `false` | Override the starting version with the release tag if this is a GitHub Release |
 
+## Extra Examples
+
+Find more examples in [the tests][changelog-tests].
+
+### Default Parameters
+
+```yaml
+- name: Generate Changelog
+  uses: Reloaded-Project/devops-changelog@v1
+```
+
+This example uses the default parameters to generate the changelog.
+
+This generates a `CHANGELOG.md` file with the default settings.
+
+### Custom Parameters
+
+```yaml
+- name: Generate Changelog
+  uses: Reloaded-Project/devops-changelog@v1
+  with:
+    output: custom-changelog.md
+    unreleased: true
+    commit-limit: 10
+    sort-commits: date-desc
+    hide-credit: true
+```
+
+This example demonstrates using custom parameters to customize the changelog generation. It sets the following inputs:
+
+- `output`: Specifies the output file name as `custom-changelog.md`.
+- `unreleased`: Includes a section for unreleased changes.
+- `commit-limit`: Limits the number of commits displayed per release to 10.
+- `sort-commits`: Sorts the commits by date in descending order.
+- `hide-credit`: Hides the auto-changelog credit.
+
+### Upload Artifact
+
+```yaml
+- name: Generate Changelog
+  uses: Reloaded-Project/devops-changelog@v1
+  with:
+    # Upload the changelog as an arifact.
+    upload-artifact: true
+
+    # Upload the changelog to GitHub Releases.
+    upload-release: true
+
+    # These change how the changelog is generated.
+    # They will limit the changelog to changes since last release.
+    is-release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    release-tag: ${{ github.ref }}
+```
+
 ## Why this Exists?
 
 To simplify deployment.
@@ -131,3 +187,4 @@ please open an issue or submit a pull request in this repository.
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 [auto-changelog]: https://github.com/cookpete/auto-changelog#command-line-options
+[changelog-tests]: ./.github/workflows/test-changelog-workflow.yml
