@@ -1,0 +1,325 @@
+name: Generate and Upload Changelog
+description: Generates a changelog using auto-changelog, with options to upload to GitHub Releases and as an artifact
+branding:
+  icon: 'book'
+  color: 'green'
+
+inputs:
+  output:
+    required: false
+    default: "CHANGELOG.md"
+    description: "Output file path"
+  config:
+    required: false
+    default: ""
+    description: "Path to the auto-changelog config file"
+  template:
+    required: false
+    default: "compact"
+    description: "Specify template to use [compact, keepachangelog, json]"
+  remote:
+    required: false
+    default: ""
+    description: "Specify git remote to use for links"
+  package:
+    required: false
+    default: ""
+    description: "Use version from file as latest release"
+  latest-version:
+    required: false
+    default: ""
+    description: "Use specified version as latest release"
+  unreleased:
+    required: false
+    default: "false"
+    description: "Include section for unreleased changes"
+  commit-limit:
+    required: false
+    default: ""
+    description: "Number of commits to display per release"
+  backfill-limit:
+    required: false
+    default: ""
+    description: "Number of commits to backfill empty releases with"
+  commit-url:
+    required: false
+    default: ""
+    description: "Override URL for commits, use {id} for commit id"
+  issue-url:
+    required: false
+    default: ""
+    description: "Override URL for issues, use {id} for issue id"
+  merge-url:
+    required: false
+    default: ""
+    description: "Override URL for merges, use {id} for merge id"
+  compare-url:
+    required: false
+    default: ""
+    description: "Override URL for compares, use {from} and {to} for tags"
+  issue-pattern:
+    required: false
+    default: ""
+    description: "Override regex pattern for issues in commit messages"
+  breaking-pattern:
+    required: false
+    default: ""
+    description: "Regex pattern for breaking change commits"
+  merge-pattern:
+    required: false
+    default: ""
+    description: "Add custom regex pattern for merge commits"
+  commit-pattern:
+    required: false
+    default: ""
+    description: "Pattern to include when parsing commits"
+  ignore-commit-pattern:
+    required: false
+    default: ""
+    description: "Pattern to ignore when parsing commits"
+  tag-pattern:
+    required: false
+    default: ""
+    description: "Override regex pattern for version tags"
+  tag-prefix:
+    required: false
+    default: ""
+    description: "Prefix used in version tags"
+  starting-version:
+    required: false
+    default: ""
+    description: "Specify earliest version to include in changelog"
+  starting-date:
+    required: false
+    default: ""
+    description: "Specify earliest date to include in changelog"
+  ending-version:
+    required: false
+    default: ""
+    description: "Specify latest version to include in changelog"
+  sort-commits:
+    required: false
+    default: "relevance"
+    description: "Sort commits by property [relevance, date, date-desc, subject, subject-desc]"
+  release-summary:
+    required: false
+    default: "false"
+    description: "Display tagged commit message body as release summary"
+  unreleased-only:
+    required: false
+    default: "false"
+    description: "Only output unreleased changes"
+  hide-empty-releases:
+    required: false
+    default: "false"
+    description: "Hide empty releases"
+  hide-credit:
+    required: false
+    default: "false"
+    description: "Hide auto-changelog credit"
+  handlebars-setup:
+    required: false
+    default: ""
+    description: "Handlebars setup file"
+  append-git-log:
+    required: false
+    default: ""
+    description: "String to append to git log command"
+  append-git-tag:
+    required: false
+    default: ""
+    description: "String to append to git tag command"
+  prepend:
+    required: false
+    default: "false"
+    description: "Prepend changelog to output file"
+  stdout:
+    required: false
+    default: "false"
+    description: "Output changelog to stdout"
+  upload-artifact:
+    required: false
+    default: "false"
+    description: "Upload the generated changelog as an artifact"
+  upload-release:
+    required: false
+    default: "false"
+    description: "Upload the generated changelog to GitHub Releases"
+  is-release:
+    required: false
+    default: "false"
+    description: "Whether this is a GitHub Release"
+  release-tag:
+    required: false
+    default: ""
+    description: "Tag associated with the GitHub Release"
+  override-starting-version:
+    required: false
+    default: "false"
+    description: "Override the starting version with the release tag if this is a GitHub Release"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install auto-changelog
+      run: npm install -g auto-changelog
+      shell: bash
+
+    - name: Set Starting Version
+      id: set-starting-version
+      run: |
+        if [[ "${{ inputs.is-release }}" == "true" && "${{ inputs.override-starting-version }}" == "true" ]]; then
+          echo "starting_version=${{ inputs.release-tag }}" >> $GITHUB_OUTPUT
+        else
+          echo "starting_version=${{ inputs.starting-version }}" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+
+    - name: Generate Changelog
+      run: |
+        command="auto-changelog"
+        
+        command+=" --output \"${{ inputs.output }}\""
+        
+        if [[ "${{ inputs.config }}" != "" ]]; then
+          command+=" --config \"${{ inputs.config }}\""
+        fi
+        
+        command+=" --template \"${{ inputs.template }}\""
+        
+        if [[ "${{ inputs.remote }}" != "" ]]; then
+          command+=" --remote \"${{ inputs.remote }}\""
+        fi
+        
+        if [[ "${{ inputs.package }}" != "" ]]; then
+          command+=" --package \"${{ inputs.package }}\""
+        fi
+        
+        if [[ "${{ inputs.latest-version }}" != "" ]]; then
+          command+=" --latest-version \"${{ inputs.latest-version }}\""
+        fi
+        
+        if [[ "${{ inputs.unreleased }}" == "true" ]]; then
+          command+=" --unreleased"
+        fi
+        
+        if [[ "${{ inputs.commit-limit }}" != "" ]]; then
+          command+=" --commit-limit \"${{ inputs.commit-limit }}\""
+        fi
+        
+        if [[ "${{ inputs.backfill-limit }}" != "" ]]; then
+          command+=" --backfill-limit \"${{ inputs.backfill-limit }}\""
+        fi
+        
+        if [[ "${{ inputs.commit-url }}" != "" ]]; then
+          command+=" --commit-url \"${{ inputs.commit-url }}\""
+        fi
+        
+        if [[ "${{ inputs.issue-url }}" != "" ]]; then
+          command+=" --issue-url \"${{ inputs.issue-url }}\""
+        fi
+        
+        if [[ "${{ inputs.merge-url }}" != "" ]]; then
+          command+=" --merge-url \"${{ inputs.merge-url }}\""
+        fi
+        
+        if [[ "${{ inputs.compare-url }}" != "" ]]; then
+          command+=" --compare-url \"${{ inputs.compare-url }}\""
+        fi
+        
+        if [[ "${{ inputs.issue-pattern }}" != "" ]]; then
+          command+=" --issue-pattern \"${{ inputs.issue-pattern }}\""
+        fi
+        
+        if [[ "${{ inputs.breaking-pattern }}" != "" ]]; then
+          command+=" --breaking-pattern \"${{ inputs.breaking-pattern }}\""
+        fi
+        
+        if [[ "${{ inputs.merge-pattern }}" != "" ]]; then
+          command+=" --merge-pattern \"${{ inputs.merge-pattern }}\""
+        fi
+        
+        if [[ "${{ inputs.commit-pattern }}" != "" ]]; then
+          command+=" --commit-pattern \"${{ inputs.commit-pattern }}\""
+        fi
+        
+        if [[ "${{ inputs.ignore-commit-pattern }}" != "" ]]; then
+          command+=" --ignore-commit-pattern \"${{ inputs.ignore-commit-pattern }}\""
+        fi
+        
+        if [[ "${{ inputs.tag-pattern }}" != "" ]]; then
+          command+=" --tag-pattern \"${{ inputs.tag-pattern }}\""
+        fi
+        
+        if [[ "${{ inputs.tag-prefix }}" != "" ]]; then
+          command+=" --tag-prefix \"${{ inputs.tag-prefix }}\""
+        fi
+        
+        if [[ "${{ steps.set-starting-version.outputs.starting_version }}" != "" ]]; then
+          command+=" --starting-version \"${{ steps.set-starting-version.outputs.starting_version }}\""
+        fi
+        
+        if [[ "${{ inputs.starting-date }}" != "" ]]; then
+          command+=" --starting-date \"${{ inputs.starting-date }}\""
+        fi
+        
+        if [[ "${{ inputs.ending-version }}" != "" ]]; then
+          command+=" --ending-version \"${{ inputs.ending-version }}\""
+        fi
+        
+        command+=" --sort-commits \"${{ inputs.sort-commits }}\""
+        
+        if [[ "${{ inputs.release-summary }}" == "true" ]]; then
+          command+=" --release-summary"
+        fi
+        
+        if [[ "${{ inputs.unreleased-only }}" == "true" ]]; then
+          command+=" --unreleased-only"
+        fi
+        
+        if [[ "${{ inputs.hide-empty-releases }}" == "true" ]]; then
+          command+=" --hide-empty-releases"
+        fi
+        
+        if [[ "${{ inputs.hide-credit }}" == "true" ]]; then
+          command+=" --hide-credit"
+        fi
+        
+        if [[ "${{ inputs.handlebars-setup }}" != "" ]]; then
+          command+=" --handlebars-setup \"${{ inputs.handlebars-setup }}\""
+        fi
+        
+        if [[ "${{ inputs.append-git-log }}" != "" ]]; then
+          command+=" --append-git-log \"${{ inputs.append-git-log }}\""
+        fi
+        
+        if [[ "${{ inputs.append-git-tag }}" != "" ]]; then
+          command+=" --append-git-tag \"${{ inputs.append-git-tag }}\""
+        fi
+        
+        if [[ "${{ inputs.prepend }}" == "true" ]]; then
+          command+=" --prepend"
+        fi
+        
+        if [[ "${{ inputs.stdout }}" == "true" ]]; then
+          command+=" --stdout"
+        fi
+        
+        echo "$command"
+        eval "$command"
+      shell: bash
+
+    - name: Upload Changelog Artifact
+      uses: actions/upload-artifact@v4
+      if: ${{ inputs.upload-artifact == 'true' }}
+      with:
+        name: Changelog
+        path: ${{ inputs.output }}
+
+    - name: Upload Changelog to GitHub Release
+      uses: softprops/action-gh-release@v2.0.5
+      if: ${{ inputs.upload-release == 'true' }}
+      with:
+        body_path: ${{ inputs.output }}
+        files: |
+          ${{ inputs.output }}
