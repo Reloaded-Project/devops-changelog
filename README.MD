@@ -104,13 +104,14 @@ The following flags are directly passed to the underlying [auto-changelog tool][
 
 And the following parameters are specific to this workflow.
 
-| Input                       | Required | Default | Description                                                                    |
-| --------------------------- | -------- | ------- | ------------------------------------------------------------------------------ |
-| `upload-artifact`           | No       | `false` | Upload the generated changelog as an artifact                                  |
-| `upload-release`            | No       | `false` | Upload the generated changelog to GitHub Releases                              |
-| `is-release`                | No       | `false` | Whether this is a GitHub Release                                               |
-| `release-tag`               | No       | `""`    | Tag associated with the GitHub Release                                         |
-| `override-starting-version` | No       | `false` | Override the starting version with the release tag if this is a GitHub Release |
+| Input                       | Required | Default     | Description                                                                    |
+| --------------------------- | -------- | ----------- | ------------------------------------------------------------------------------ |
+| `upload-artifact`           | No       | `false`     | Upload the generated changelog as an artifact                                  |
+| `artifact-name`             | No       | `Changelog` | Name of the artifact for the uploaded changelog.                               |
+| `upload-release`            | No       | `false`     | Upload the generated changelog to GitHub Releases                              |
+| `is-release`                | No       | `false`     | Whether this is a GitHub Release                                               |
+| `release-tag`               | No       | `""`        | Tag associated with the GitHub Release                                         |
+| `override-starting-version` | No       | `false`     | Override the starting version with the release tag if this is a GitHub Release |
 
 ## Extra Examples
 

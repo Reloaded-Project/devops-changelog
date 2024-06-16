@@ -157,6 +157,10 @@ inputs:
     required: false
     default: "false"
     description: "Override the starting version with the release tag if this is a GitHub Release"
+  artifact-name:
+    required: false
+    default: "Changelog"
+    description: "Override the artifact name for the changelog"
 
 runs:
   using: "composite"
@@ -313,7 +317,7 @@ runs:
       uses: actions/upload-artifact@v4
       if: ${{ inputs.upload-artifact == 'true' }}
       with:
-        name: Changelog
+        name: ${{ inputs.artifact-name }}
         path: ${{ inputs.output }}
 
     - name: Upload Changelog to GitHub Release

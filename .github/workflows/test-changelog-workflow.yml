@@ -85,7 +85,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Test Upload Artifact
+      - name: Generate Changelog
         uses: Reloaded-Project/devops-changelog@v1
         with:
           upload-artifact: true
@@ -98,5 +98,29 @@ jobs:
         run: |
           if [ ! -s "CHANGELOG.md" ]; then
             echo "Downloaded CHANGELOG.md artifact is empty"
+            exit 1
+          fi
+
+  test-custom-artifact-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate Changelog
+        uses: Reloaded-Project/devops-changelog@v1
+        with:
+          upload-artifact: true
+          artifact-name: Custom_Changelog
+      - name: Download Custom Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Custom_Changelog
+      - name: Assert Downloaded Custom Artifact Not Empty
+        shell: bash
+        run: |
+          if [ ! -s "CHANGELOG.md" ]; then
+            echo "Downloaded custom CHANGELOG.md artifact is empty"
             exit 1
           fi
