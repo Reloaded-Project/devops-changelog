@@ -1,8 +1,8 @@
 name: Generate and Upload Changelog
 description: Generates a changelog using auto-changelog, with options to upload to GitHub Releases and as an artifact
 branding:
-  icon: 'book'
-  color: 'green'
+  icon: 'file-text'
+  color: 'red'
 
 inputs:
   output:
