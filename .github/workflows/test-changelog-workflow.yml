@@ -30,6 +30,20 @@ jobs:
           fetch-depth: 0
       - name: Test Default Parameters
         uses: Reloaded-Project/devops-changelog@v1
+      - name: Assert Changelog File Existence
+        shell: bash
+        run: |
+          if [ ! -f "CHANGELOG.md" ]; then
+            echo "CHANGELOG.md file does not exist"
+            exit 1
+          fi
+      - name: Assert Changelog File Not Empty
+        shell: bash
+        run: |
+          if [ ! -s "CHANGELOG.md" ]; then
+            echo "CHANGELOG.md file is empty"
+            exit 1
+          fi
 
   test-custom-parameters:
     strategy:
@@ -49,6 +63,20 @@ jobs:
           commit-limit: 10
           sort-commits: date-desc
           hide-credit: true
+      - name: Assert Custom Changelog File Existence
+        shell: bash
+        run: |
+          if [ ! -f "custom-changelog.md" ]; then
+            echo "custom-changelog.md file does not exist"
+            exit 1
+          fi
+      - name: Assert Custom Changelog File Not Empty
+        shell: bash
+        run: |
+          if [ ! -s "custom-changelog.md" ]; then
+            echo "custom-changelog.md file is empty"
+            exit 1
+          fi
 
   test-upload-artifact:
     runs-on: ubuntu-latest
@@ -61,3 +89,14 @@ jobs:
         uses: Reloaded-Project/devops-changelog@v1
         with:
           upload-artifact: true
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Changelog
+      - name: Assert Downloaded Artifact Not Empty
+        shell: bash
+        run: |
+          if [ ! -s "CHANGELOG.md" ]; then
+            echo "Downloaded CHANGELOG.md artifact is empty"
+            exit 1
+          fi
