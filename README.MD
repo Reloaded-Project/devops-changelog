@@ -46,8 +46,8 @@ jobs:
           commit-limit: 50
           upload-artifact: true
           upload-release: true
-          is-release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-          release-tag: ${{ github.ref }}
+          is-release: ${{ startsWith(github.ref, 'refs/tags/') }}
+          release-tag: ${{ github.ref_name }}
 ```
 
 ## Setup
