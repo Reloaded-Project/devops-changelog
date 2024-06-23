@@ -32,6 +32,9 @@ on:
 jobs:
   changelog:
     runs-on: ubuntu-latest
+    permissions: 
+      contents: write
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
