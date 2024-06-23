@@ -161,10 +161,20 @@ inputs:
     required: false
     default: "Changelog"
     description: "Override the artifact name for the changelog"
+  auto-checkout:
+    required: false
+    default: 'true'
+    description: "Automatically checks out the current repository"
 
 runs:
   using: "composite"
   steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      if: ${{ inputs.auto-checkout == 'true' }}
+      with:
+        fetch-depth: 0
+
     - name: Install auto-changelog
       run: npm install -g auto-changelog
       shell: bash

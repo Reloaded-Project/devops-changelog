@@ -24,10 +24,6 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Test Default Parameters
         uses: Reloaded-Project/devops-changelog@v1
       - name: Assert Changelog File Existence
@@ -51,10 +47,6 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Test Custom Parameters
         uses: Reloaded-Project/devops-changelog@v1
         with:
@@ -81,10 +73,6 @@ jobs:
   test-upload-artifact:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Generate Changelog
         uses: Reloaded-Project/devops-changelog@v1
         with:
@@ -104,10 +92,6 @@ jobs:
   test-custom-artifact-name:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Generate Changelog
         uses: Reloaded-Project/devops-changelog@v1
         with:

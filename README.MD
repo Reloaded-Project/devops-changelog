@@ -36,11 +36,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
+      # Checkout is automatic
       - name: Generate Changelog
         uses: Reloaded-Project/devops-changelog@v1
         with:
@@ -109,6 +105,7 @@ And the following parameters are specific to this workflow.
 
 | Input                       | Required | Default     | Description                                                                    |
 | --------------------------- | -------- | ----------- | ------------------------------------------------------------------------------ |
+| `auto-checkout`             | No       | `true`      | Performs automatic checkout of current repository.                             |
 | `upload-artifact`           | No       | `false`     | Upload the generated changelog as an artifact                                  |
 | `artifact-name`             | No       | `Changelog` | Name of the artifact for the uploaded changelog.                               |
 | `upload-release`            | No       | `false`     | Upload the generated changelog to GitHub Releases                              |
