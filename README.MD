@@ -28,6 +28,7 @@ on:
     branches: [ main ]
     tags:
       - '*'
+  workflow_dispatch:
 
 jobs:
   changelog:
@@ -45,6 +46,9 @@ jobs:
           commit-limit: 50
           upload-artifact: true
           upload-release: true
+          template: keepachangelog
+          override-starting-version: true
+          hide-credit: false
           is-release: ${{ startsWith(github.ref, 'refs/tags/') }}
           release-tag: ${{ github.ref_name }}
 ```
