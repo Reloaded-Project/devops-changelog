@@ -42,7 +42,7 @@ jobs:
         uses: Reloaded-Project/devops-changelog@v1
         with:
           output: CHANGELOG.md
-          unreleased: true
+          unreleased: false
           commit-limit: 50
           upload-artifact: true
           upload-release: true
