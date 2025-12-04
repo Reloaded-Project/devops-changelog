@@ -1,8 +1,8 @@
 name: Generate and Upload Changelog
 description: Generates a changelog using auto-changelog, with options to upload to GitHub Releases and as an artifact
 branding:
-  icon: 'file-text'
-  color: 'red'
+  icon: "file-text"
+  color: "red"
 
 inputs:
   output:
@@ -163,7 +163,7 @@ inputs:
     description: "Override the artifact name for the changelog"
   auto-checkout:
     required: false
-    default: 'true'
+    default: "true"
     description: "Automatically checks out the current repository"
 
 runs:
@@ -192,133 +192,133 @@ runs:
     - name: Generate Changelog
       run: |
         command="auto-changelog"
-        
+
         command+=" --output \"${{ inputs.output }}\""
-        
+
         if [[ "${{ inputs.config }}" != "" ]]; then
           command+=" --config \"${{ inputs.config }}\""
         fi
-        
+
         command+=" --template \"${{ inputs.template }}\""
-        
+
         if [[ "${{ inputs.remote }}" != "" ]]; then
           command+=" --remote \"${{ inputs.remote }}\""
         fi
-        
+
         if [[ "${{ inputs.package }}" != "" ]]; then
           command+=" --package \"${{ inputs.package }}\""
         fi
-        
+
         if [[ "${{ inputs.latest-version }}" != "" ]]; then
           command+=" --latest-version \"${{ inputs.latest-version }}\""
         fi
-        
+
         if [[ "${{ inputs.unreleased }}" == "true" ]]; then
           command+=" --unreleased"
         fi
-        
+
         if [[ "${{ inputs.commit-limit }}" != "" ]]; then
           command+=" --commit-limit \"${{ inputs.commit-limit }}\""
         fi
-        
+
         if [[ "${{ inputs.backfill-limit }}" != "" ]]; then
           command+=" --backfill-limit \"${{ inputs.backfill-limit }}\""
         fi
-        
+
         if [[ "${{ inputs.commit-url }}" != "" ]]; then
           command+=" --commit-url \"${{ inputs.commit-url }}\""
         fi
-        
+
         if [[ "${{ inputs.issue-url }}" != "" ]]; then
           command+=" --issue-url \"${{ inputs.issue-url }}\""
         fi
-        
+
         if [[ "${{ inputs.merge-url }}" != "" ]]; then
           command+=" --merge-url \"${{ inputs.merge-url }}\""
         fi
-        
+
         if [[ "${{ inputs.compare-url }}" != "" ]]; then
           command+=" --compare-url \"${{ inputs.compare-url }}\""
         fi
-        
+
         if [[ "${{ inputs.issue-pattern }}" != "" ]]; then
           command+=" --issue-pattern \"${{ inputs.issue-pattern }}\""
         fi
-        
+
         if [[ "${{ inputs.breaking-pattern }}" != "" ]]; then
           command+=" --breaking-pattern \"${{ inputs.breaking-pattern }}\""
         fi
-        
+
         if [[ "${{ inputs.merge-pattern }}" != "" ]]; then
           command+=" --merge-pattern \"${{ inputs.merge-pattern }}\""
         fi
-        
+
         if [[ "${{ inputs.commit-pattern }}" != "" ]]; then
           command+=" --commit-pattern \"${{ inputs.commit-pattern }}\""
         fi
-        
+
         if [[ "${{ inputs.ignore-commit-pattern }}" != "" ]]; then
           command+=" --ignore-commit-pattern \"${{ inputs.ignore-commit-pattern }}\""
         fi
-        
+
         if [[ "${{ inputs.tag-pattern }}" != "" ]]; then
           command+=" --tag-pattern \"${{ inputs.tag-pattern }}\""
         fi
-        
+
         if [[ "${{ inputs.tag-prefix }}" != "" ]]; then
           command+=" --tag-prefix \"${{ inputs.tag-prefix }}\""
         fi
-        
+
         if [[ "${{ steps.set-starting-version.outputs.starting_version }}" != "" ]]; then
           command+=" --starting-version \"${{ steps.set-starting-version.outputs.starting_version }}\""
         fi
-        
+
         if [[ "${{ inputs.starting-date }}" != "" ]]; then
           command+=" --starting-date \"${{ inputs.starting-date }}\""
         fi
-        
+
         if [[ "${{ inputs.ending-version }}" != "" ]]; then
           command+=" --ending-version \"${{ inputs.ending-version }}\""
         fi
-        
+
         command+=" --sort-commits \"${{ inputs.sort-commits }}\""
-        
+
         if [[ "${{ inputs.release-summary }}" == "true" ]]; then
           command+=" --release-summary"
         fi
-        
+
         if [[ "${{ inputs.unreleased-only }}" == "true" ]]; then
           command+=" --unreleased-only"
         fi
-        
+
         if [[ "${{ inputs.hide-empty-releases }}" == "true" ]]; then
           command+=" --hide-empty-releases"
         fi
-        
+
         if [[ "${{ inputs.hide-credit }}" == "true" ]]; then
           command+=" --hide-credit"
         fi
-        
+
         if [[ "${{ inputs.handlebars-setup }}" != "" ]]; then
           command+=" --handlebars-setup \"${{ inputs.handlebars-setup }}\""
         fi
-        
+
         if [[ "${{ inputs.append-git-log }}" != "" ]]; then
           command+=" --append-git-log \"${{ inputs.append-git-log }}\""
         fi
-        
+
         if [[ "${{ inputs.append-git-tag }}" != "" ]]; then
           command+=" --append-git-tag \"${{ inputs.append-git-tag }}\""
         fi
-        
+
         if [[ "${{ inputs.prepend }}" == "true" ]]; then
           command+=" --prepend"
         fi
-        
+
         if [[ "${{ inputs.stdout }}" == "true" ]]; then
           command+=" --stdout"
         fi
-        
+
         echo "$command"
         eval "$command"
       shell: bash
@@ -331,7 +331,7 @@ runs:
         path: ${{ inputs.output }}
 
     - name: Upload Changelog to GitHub Release
-      uses: softprops/action-gh-release@v2.0.5
+      uses: softprops/action-gh-release@v2
       if: ${{ inputs.upload-release == 'true' }}
       with:
         body_path: ${{ inputs.output }}
