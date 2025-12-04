@@ -2,17 +2,10 @@ name: Test Changelog Workflow
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Run daily at midnight
+    - cron: '0 0 * * *'
   workflow_dispatch:
-  push:
-    branches: [ master ]
-    tags:
-      - 'v1'
-    paths:
-      - 'action.yml'
-      - '.github/workflows/test-changelog-workflow.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ v1-master ]
     paths:
       - 'action.yml'
       - '.github/workflows/test-changelog-workflow.yml'
@@ -24,8 +17,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Test Default Parameters
-        uses: Reloaded-Project/devops-changelog@v1
+        uses: ./
+        with:
+          auto-checkout: false
       - name: Assert Changelog File Existence
         shell: bash
         run: |
@@ -47,9 +46,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Test Custom Parameters
-        uses: Reloaded-Project/devops-changelog@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
+          fetch-depth: 0
+      - name: Test Custom Parameters
+        uses: ./
+        with:
+          auto-checkout: false
           output: custom-changelog.md
           unreleased: true
           commit-limit: 10
@@ -73,9 +77,14 @@ jobs:
   test-upload-artifact:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate Changelog
-        uses: Reloaded-Project/devops-changelog@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
+          fetch-depth: 0
+      - name: Generate Changelog
+        uses: ./
+        with:
+          auto-checkout: false
           upload-artifact: true
       - name: Download Artifact
         uses: actions/download-artifact@v4
@@ -92,9 +101,14 @@ jobs:
   test-custom-artifact-name:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate Changelog
-        uses: Reloaded-Project/devops-changelog@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
+          fetch-depth: 0
+      - name: Generate Changelog
+        uses: ./
+        with:
+          auto-checkout: false
           upload-artifact: true
           artifact-name: Custom_Changelog
       - name: Download Custom Artifact
